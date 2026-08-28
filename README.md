@@ -2,7 +2,11 @@
 
 本地运行的时间管理应用，数据统一存储在本机 SQLite 文件（`time.db`），无需联网服务、无需安装任何依赖（使用 Node.js 自带模块）。
 
-## 启动方式
+支持两种形态：
+- **Windows 桌面应用**（Electron 独立窗口）
+- **安卓 APP**（Capacitor 打包 APK，数据用内置 SQLite 存于手机本地，完全离线可用）
+
+## 启动方式（桌面版）
 
 双击 `start.bat` —— 会打开一个独立的桌面应用窗口（Electron），不是网页：
 有自己的应用图标和标题栏、无浏览器地址栏、重复双击只聚焦已有窗口、关窗即退出（数据自动落盘）。
@@ -31,12 +35,27 @@
    > 说明：浏览器无法读取手机系统里微信、抖音等 APP 的真实时长（安卓原生版需用 UsageStatsManager），因此系统 APP 部分为演示数据，本应用内页面为真实统计。
 5. **我的**：头像（emoji 或图片链接）、昵称、手机号（需密码验证）均可修改；底部显示版本号 v1.0.0、应用信息；支持退出登录。
 
+## 安卓版打包
+
+环境：JDK 21 + Android SDK（SDK 目录 `C:\Android\Sdk`，在 `android/local.properties` 配置）。
+
+```
+node make-android-www.js   # 组装 www（页面 + sql.js 本地 SQLite 运行时）
+cd android
+gradlew.bat assembleDebug  # 产出 app/build/outputs/apk/debug/app-debug.apk
+```
+
+手机端没有 Node 服务，`public/local-server.js` 在 APP 内部用 sql.js 实现
+与电脑版完全一致的 API，数据以 SQLite 格式持久化在手机本地。
+
 ## 文件结构
 
 ```
 time-manager-app/
 ├── electron-main.js # Electron 桌面窗口（自动拉起后端）
 ├── server.js        # 后端服务 + SQLite（零依赖）
+├── local-server.js  # 安卓端本地数据层（public/ 下）
+├── make-android-www.js / capacitor.config.json / android/  # 安卓工程
 ├── make-icon.js     # 应用图标生成脚本
 ├── start.bat        # 一键启动桌面应用
 ├── time.db          # SQLite 数据文件（首次启动自动生成）
@@ -44,5 +63,6 @@ time-manager-app/
     ├── index.html   # 页面结构
     ├── style.css    # 样式
     ├── app.js       # 前端逻辑
+    ├── bg/          # 五板块矢量主题背景
     └── icon.png     # 应用图标
 ```

@@ -1,0 +1,8 @@
+{
+  "appId": "com.zx123.focustime",
+  "appName": "专注时光",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}

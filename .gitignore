@@ -6,6 +6,15 @@ time.db
 time.db-shm
 time.db-wal
 
+# 安卓构建产物
+www/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/capacitor-cordova-android-plugins/
+*.apk
+
 # 临时文件
 test_cookie.txt
 *.log

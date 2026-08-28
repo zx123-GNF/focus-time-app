@@ -4,6 +4,11 @@ let me = null;
 
 /* ================= 工具 ================= */
 async function api(path, method = 'GET', body) {
+  // 安卓 APP 内置本地数据层（SQLite 存于手机本地，无需电脑服务）
+  if (window.LocalAPI && window.LocalAPI.enabled) {
+    const r = await window.LocalAPI.handle(method, path, body || {});
+    return r.data;
+  }
   const opt = { method, headers: { 'Content-Type': 'application/json' } };
   if (body) opt.body = JSON.stringify(body);
   const r = await fetch(API + path, opt);
@@ -127,7 +132,12 @@ setInterval(() => { // 每60秒把本应用使用时长上报一次
 window.addEventListener('beforeunload', () => {
   trackTabEnter('__end__');
   const apps = Object.entries(tabSeconds).map(([name, sec]) => ({ app_name: `本应用·${PAGE_TITLE[name] === undefined ? name : PAGE_TITLE[name]}`, minutes: sec / 60 }));
-  if (apps.length) navigator.sendBeacon?.('/api/usage/report', new Blob([JSON.stringify({ apps })], { type: 'application/json' }));
+  if (!apps.length) return;
+  if (window.LocalAPI && window.LocalAPI.enabled) {
+    window.LocalAPI.handle('POST', '/api/usage/report', { apps }).catch(() => {});
+  } else {
+    navigator.sendBeacon?.('/api/usage/report', new Blob([JSON.stringify({ apps })], { type: 'application/json' }));
+  }
 });
 
 /* ================= 首页：天气 ================= */
