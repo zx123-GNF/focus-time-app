@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>专注时光 · 时间管理</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ 登录页 ============ -->
+  <div id="login-view" class="login-view hidden">
+    <div class="login-box">
+      <div class="login-logo">⏳</div>
+      <h1>专注时光</h1>
+      <p class="login-sub">你的时间管理助手</p>
+      <div class="login-tabs">
+        <button id="tab-login" class="active" onclick="switchLoginTab('login')">登录</button>
+        <button id="tab-register" onclick="switchLoginTab('register')">注册</button>
+      </div>
+      <input id="login-phone" type="tel" maxlength="11" placeholder="手机号">
+      <input id="login-password" type="password" placeholder="密码">
+      <input id="reg-name" type="text" placeholder="昵称（注册时填写）" class="hidden">
+      <div id="login-error" class="login-error hidden"></div>
+      <button id="btn-submit-login" class="btn-primary" onclick="submitLogin()">登 录</button>
+      <div class="quick-accounts">
+        <p>快速体验（预置账号）</p>
+        <button onclick="quickLogin('13800000001','123456')">账号1：13800000001（阿泽）</button>
+        <button onclick="quickLogin('13900000002','123456')">账号2：13900000002（备用号）</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 主界面 ============ -->
+  <div id="main-view" class="hidden">
+    <header class="app-header">
+      <span id="header-title">首页</span>
+    </header>
+
+    <main id="page-container">
+
+      <!-- ===== 首页 ===== -->
+      <section id="page-home" class="page">
+        <div class="weather-card card" onclick="manualRefreshWeather()">
+          <div class="weather-main">
+            <div>
+              <div class="weather-city">📍 <span id="weather-city">定位中...</span></div>
+              <div class="weather-temp"><span id="weather-temp">--</span>°C</div>
+              <div class="weather-desc" id="weather-desc">--</div>
+            </div>
+            <div class="weather-icon" id="weather-icon">⛅</div>
+          </div>
+          <div class="weather-extra">
+            <span>湿度 <b id="weather-humidity">--</b>%</span>
+            <span>今日 <b id="weather-max">--</b>° / <b id="weather-min">--</b>°</span>
+            <span class="weather-refresh">点我刷新 / 换城市</span>
+          </div>
+        </div>
+
+        <div class="card reminder-card">
+          <div class="card-title">💧 喝水提醒</div>
+          <div class="reminder-row">
+            <div class="reminder-info">
+              <div id="water-count">今日已喝 0 杯</div>
+              <div class="reminder-sub">每 <span id="water-interval-show">60</span> 分钟提醒一次</div>
+            </div>
+            <div class="reminder-actions">
+              <button class="btn-small" onclick="drinkWater()">喝一杯</button>
+              <label class="switch"><input type="checkbox" id="water-toggle" onchange="saveWaterSetting()"><span class="slider"></span></label>
+            </div>
+          </div>
+          <div class="interval-picker">
+            间隔：
+            <select id="water-interval" onchange="saveWaterSetting()">
+              <option value="30">30分钟</option>
+              <option value="60" selected>60分钟</option>
+              <option value="90">90分钟</option>
+              <option value="120">120分钟</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card reminder-card">
+          <div class="card-title">🌙 睡觉提醒</div>
+          <div class="reminder-row">
+            <div class="reminder-info">
+              <div>提醒时间：<span id="bedtime-show">23:00</span></div>
+              <div class="reminder-sub">到点弹窗提醒你休息</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="sleep-toggle" onchange="saveSleepSetting()"><span class="slider"></span></label>
+          </div>
+          <div class="interval-picker">
+            时间：<input type="time" id="bedtime" value="23:00" onchange="saveSleepSetting()">
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📖 每日一言</div>
+          <div class="daily-quote" id="daily-quote"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">👥 联系人 <button class="btn-small btn-add" onclick="openContactModal()">+ 通过手机号添加</button></div>
+          <div id="contact-list" class="contact-list"></div>
+        </div>
+      </section>
+
+      <!-- ===== 专注 ===== -->
+      <section id="page-focus" class="page focus-page hidden">
+        <div class="focus-task-label">专注事情</div>
+        <div id="focus-task-bar" class="focus-task-bar"></div>
+
+        <div class="focus-circle-wrap">
+          <svg class="focus-ring" viewBox="0 0 220 220">
+            <circle class="ring-bg" cx="110" cy="110" r="100"/>
+            <circle id="ring-progress" class="ring-fg" cx="110" cy="110" r="100"/>
+          </svg>
+          <div class="focus-circle-inner">
+            <div class="focus-task-now" id="focus-task-now">未选择</div>
+            <div class="focus-time" id="focus-time">00:00</div>
+            <div class="focus-state" id="focus-state">准备开始</div>
+          </div>
+        </div>
+
+        <div class="focus-btns">
+          <button id="btn-focus-start" class="btn-focus" onclick="toggleFocus()">开始专注</button>
+          <button id="btn-focus-done" class="btn-focus ghost hidden" onclick="finishFocus()">结束并保存</button>
+        </div>
+
+        <div class="focus-summary card">
+          <div class="card-title">今日专注</div>
+          <div id="focus-today-list" class="focus-today-list"></div>
+        </div>
+      </section>
+
+      <!-- ===== 计划日程 ===== -->
+      <section id="page-schedule" class="page hidden">
+        <div class="tier-groups" id="tier-groups"></div>
+        <button class="fab" onclick="openScheduleModal()">＋</button>
+      </section>
+
+      <!-- ===== 使用统计 ===== -->
+      <section id="page-usage" class="page hidden">
+        <div id="usage-perm-box" class="card perm-box">
+          <div class="card-title">🔒 应用使用权限</div>
+          <p class="perm-desc">统计手机各 APP 的使用时长，需要获取「应用使用时间访问权限」。</p>
+          <button class="btn-primary" onclick="requestUsagePermission()">申请权限</button>
+        </div>
+        <div id="usage-content" class="hidden">
+          <div class="card">
+            <div class="card-title">📱 今日屏幕使用时长</div>
+            <div class="usage-total"><span id="usage-total">0</span> 分钟</div>
+            <div id="usage-apps" class="usage-apps"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">📊 近7天总览</div>
+            <div id="usage-week" class="usage-week"></div>
+          </div>
+          <p class="usage-note">* 浏览器环境下无法读取手机系统各应用的真实时长，此处为演示数据 + 本应用内各页面真实使用时长。安卓原生版可通过 UsageStatsManager 获取真实数据。</p>
+        </div>
+      </section>
+
+      <!-- ===== 我的 ===== -->
+      <section id="page-mine" class="page hidden">
+        <div class="card profile-card">
+          <div class="profile-avatar" id="profile-avatar" onclick="changeAvatar()">🙂</div>
+          <div class="profile-info">
+            <div class="profile-name" id="profile-name">--</div>
+            <div class="profile-phone" id="profile-phone">--</div>
+          </div>
+          <button class="btn-small" onclick="editName()">改昵称</button>
+        </div>
+        <div class="card menu-card">
+          <div class="menu-item" onclick="changePhone()">📱 更改手机号</div>
+          <div class="menu-item" onclick="changeAvatar()">🖼️ 更换头像</div>
+          <div class="menu-item" onclick="openNotificationPermission()">🔔 消息通知设置</div>
+        </div>
+        <div class="card about-card">
+          <div class="menu-item no-action"><span>版本号</span><span class="muted">v1.0.0</span></div>
+          <div class="menu-item no-action"><span>应用名称</span><span class="muted">专注时光</span></div>
+          <div class="menu-item no-action"><span>数据存储</span><span class="muted">本机 SQLite</span></div>
+          <div class="menu-item no-action"><span>开发者</span><span class="muted">我自己</span></div>
+        </div>
+        <button class="btn-logout" onclick="logout()">退出登录</button>
+      </section>
+
+    </main>
+
+    <nav class="tab-bar">
+      <div class="tab" data-page="home" onclick="switchTab('home')"><span class="tab-icon">🏠</span><span>首页</span></div>
+      <div class="tab" data-page="focus" onclick="switchTab('focus')"><span class="tab-icon">⏱️</span><span>专注</span></div>
+      <div class="tab" data-page="schedule" onclick="switchTab('schedule')"><span class="tab-icon">🗓️</span><span>日程</span></div>
+      <div class="tab" data-page="usage" onclick="switchTab('usage')"><span class="tab-icon">📊</span><span>统计</span></div>
+      <div class="tab" data-page="mine" onclick="switchTab('mine')"><span class="tab-icon">👤</span><span>我的</span></div>
+    </nav>
+  </div>
+
+  <!-- 联系人弹窗 -->
+  <div id="contact-modal" class="modal hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+    <div class="modal-box">
+      <h3>添加联系人</h3>
+      <input id="contact-name" type="text" placeholder="姓名">
+      <input id="contact-phone" type="tel" maxlength="11" placeholder="对方手机号">
+      <input id="contact-remark" type="text" placeholder="备注（选填）">
+      <div class="modal-btns">
+        <button class="btn-plain" onclick="closeModal('contact-modal')">取消</button>
+        <button class="btn-primary" onclick="saveContact()">添加</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 日程弹窗 -->
+  <div id="schedule-modal" class="modal hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+    <div class="modal-box">
+      <h3>添加任务</h3>
+      <input id="sch-title" type="text" placeholder="自定义任务名称">
+      <label class="field-label">开始时间</label>
+      <input id="sch-start" type="datetime-local">
+      <label class="field-label">最迟时间</label>
+      <input id="sch-deadline" type="datetime-local">
+      <label class="field-label">时间紧张程度</label>
+      <div class="tier-picker" id="tier-picker">
+        <div class="tier-opt tier-1" data-tier="1" onclick="pickTier(1)">紧急</div>
+        <div class="tier-opt tier-2" data-tier="2" onclick="pickTier(2)">中等</div>
+        <div class="tier-opt tier-3" data-tier="3" onclick="pickTier(3)">悠闲</div>
+      </div>
+      <input id="sch-note" type="text" placeholder="备注（选填）">
+      <div class="modal-btns">
+        <button class="btn-plain" onclick="closeModal('schedule-modal')">取消</button>
+        <button class="btn-primary" onclick="saveSchedule()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 自定义专注事情弹窗 -->
+  <div id="custom-task-modal" class="modal hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+    <div class="modal-box">
+      <h3>自定义专注事情</h3>
+      <input id="custom-task-name" type="text" placeholder="例如：刷题、背单词、读书...">
+      <div class="modal-btns">
+        <button class="btn-plain" onclick="closeModal('custom-task-modal')">取消</button>
+        <button class="btn-primary" onclick="saveCustomTask()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 权限申请弹窗 -->
+  <div id="perm-modal" class="modal hidden">
+    <div class="modal-box">
+      <h3>🔐 权限申请</h3>
+      <p class="perm-modal-text">「专注时光」申请获取<b>应用使用时间访问权限</b>，用于统计各应用的使用时长并生成报告。是否允许？</p>
+      <div class="modal-btns">
+        <button class="btn-plain" onclick="denyUsagePermission()">拒绝</button>
+        <button class="btn-primary" onclick="grantUsagePermission()">允许</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

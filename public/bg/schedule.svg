@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1600" viewBox="0 0 800 1600">
+  <!-- 日程背景：紫境日历 -->
+  <defs>
+    <linearGradient id="purp" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#efe4ff"/>
+      <stop offset="0.5" stop-color="#e3d6ff"/>
+      <stop offset="1" stop-color="#dce7ff"/>
+    </linearGradient>
+    <radialGradient id="pglow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#9d6bff" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#9d6bff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="1600" fill="url(#purp)"/>
+  <circle cx="120" cy="200" r="300" fill="url(#pglow)"/>
+  <circle cx="700" cy="800" r="320" fill="url(#pglow)"/>
+  <!-- 大日历剪影（左上，很淡） -->
+  <g opacity="0.13">
+    <rect x="60" y="120" width="300" height="280" rx="28" fill="#7c5cff"/>
+    <rect x="60" y="120" width="300" height="64" rx="28" fill="#5b3fd6"/>
+    <circle cx="120" cy="152" r="9" fill="#ffffff"/>
+    <circle cx="300" cy="152" r="9" fill="#ffffff"/>
+    <g fill="#ffffff" opacity="0.85">
+      <rect x="90" y="220" width="60" height="48" rx="10"/>
+      <rect x="180" y="220" width="60" height="48" rx="10"/>
+      <rect x="270" y="220" width="60" height="48" rx="10"/>
+      <rect x="90" y="290" width="60" height="48" rx="10"/>
+      <rect x="180" y="290" width="60" height="48" rx="10" opacity="0.5"/>
+    </g>
+  </g>
+  <!-- 漂浮的任务卡片 -->
+  <g opacity="0.16">
+    <rect x="470" y="380" width="260" height="90" rx="20" fill="#ffffff"/>
+    <rect x="470" y="380" width="10" height="90" rx="5" fill="#ef5350"/>
+    <circle cx="520" cy="425" r="16" fill="none" stroke="#b9a6f5" stroke-width="4"/>
+    <rect x="550" y="405" width="140" height="14" rx="7" fill="#c9baf8"/>
+    <rect x="550" y="432" width="100" height="10" rx="5" fill="#ddd3fb"/>
+  </g>
+  <g opacity="0.14">
+    <rect x="120" y="640" width="260" height="90" rx="20" fill="#ffffff"/>
+    <rect x="120" y="640" width="10" height="90" rx="5" fill="#34b96f"/>
+    <circle cx="170" cy="685" r="16" fill="none" stroke="#b9a6f5" stroke-width="4"/>
+    <rect x="200" y="665" width="140" height="14" rx="7" fill="#c9baf8"/>
+    <rect x="200" y="692" width="100" height="10" rx="5" fill="#ddd3fb"/>
+  </g>
+  <g opacity="0.13">
+    <rect x="500" y="1050" width="240" height="84" rx="20" fill="#ffffff"/>
+    <rect x="500" y="1050" width="10" height="84" rx="5" fill="#f6a609"/>
+    <circle cx="548" cy="1092" r="15" fill="none" stroke="#b9a6f5" stroke-width="4"/>
+    <rect x="576" y="1074" width="130" height="13" rx="6" fill="#c9baf8"/>
+    <rect x="576" y="1099" width="90" height="10" rx="5" fill="#ddd3fb"/>
+  </g>
+  <!-- 三色圆点（对应三档） -->
+  <g opacity="0.35">
+    <circle cx="150" cy="500" r="10" fill="#ef5350"/>
+    <circle cx="185" cy="500" r="10" fill="#f6a609"/>
+    <circle cx="220" cy="500" r="10" fill="#34b96f"/>
+  </g>
+  <g opacity="0.25">
+    <circle cx="600" cy="180" r="8" fill="#7c5cff"/>
+    <circle cx="632" cy="180" r="8" fill="#4f9dff"/>
+    <circle cx="664" cy="180" r="8" fill="#4ee6a8"/>
+  </g>
+  <!-- 对勾装饰 -->
+  <g stroke="#7c5cff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.18">
+    <path d="M640 620 l22 22 40 -46"/>
+  </g>
+  <!-- 底部波浪 -->
+  <path d="M0 1420 Q200 1360 400 1400 T800 1380 V1600 H0 Z" fill="#c9b6f8" opacity="0.35"/>
+  <path d="M0 1490 Q220 1440 430 1475 T800 1455 V1600 H0 Z" fill="#b39df3" opacity="0.3"/>
+</svg>
